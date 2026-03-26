@@ -20,13 +20,14 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: sample_files; Type: TABLE; Schema: public; Owner: -
+-- Name: samples; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sample_files (
-    id integer NOT NULL,
-    name character varying(64) NOT NULL,
-    path character varying(255)
+CREATE TABLE public.samples (
+    id integer CONSTRAINT sample_files_id_not_null NOT NULL,
+    name character varying(64) CONSTRAINT sample_files_name_not_null NOT NULL,
+    path character varying(255),
+    created date
 );
 
 
@@ -47,7 +48,7 @@ CREATE SEQUENCE public.sample_files_id_seq
 -- Name: sample_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.sample_files_id_seq OWNED BY public.sample_files.id;
+ALTER SEQUENCE public.sample_files_id_seq OWNED BY public.samples.id;
 
 
 --
@@ -60,63 +61,25 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: sound_files; Type: TABLE; Schema: public; Owner: -
+-- Name: samples id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sound_files (
-    id integer NOT NULL,
-    name text,
-    path text
-);
+ALTER TABLE ONLY public.samples ALTER COLUMN id SET DEFAULT nextval('public.sample_files_id_seq'::regclass);
 
 
 --
--- Name: sound_files_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: samples sample_files_path_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.sound_files_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: sound_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.sound_files_id_seq OWNED BY public.sound_files.id;
-
-
---
--- Name: sample_files id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sample_files ALTER COLUMN id SET DEFAULT nextval('public.sample_files_id_seq'::regclass);
-
-
---
--- Name: sound_files id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sound_files ALTER COLUMN id SET DEFAULT nextval('public.sound_files_id_seq'::regclass);
-
-
---
--- Name: sample_files sample_files_path_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sample_files
+ALTER TABLE ONLY public.samples
     ADD CONSTRAINT sample_files_path_key UNIQUE (path);
 
 
 --
--- Name: sample_files sample_files_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: samples sample_files_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.sample_files
+ALTER TABLE ONLY public.samples
     ADD CONSTRAINT sample_files_pkey PRIMARY KEY (id);
 
 
@@ -126,14 +89,6 @@ ALTER TABLE ONLY public.sample_files
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: sound_files sound_files_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sound_files
-    ADD CONSTRAINT sound_files_pkey PRIMARY KEY (id);
 
 
 --
@@ -148,4 +103,6 @@ ALTER TABLE ONLY public.sound_files
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20260326173633');
+    ('20260326173633'),
+    ('20260326222326'),
+    ('20260326223303');

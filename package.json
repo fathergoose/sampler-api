@@ -23,6 +23,7 @@
     "@src": "dist"
   },
   "dependencies": {
+    "@types/pg": "^8.20.0",
     "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.20",
     "dotenv": "^17.3.1",
