@@ -9,7 +9,7 @@ import { Entity } from './common/types';
                                  Constants
 ******************************************************************************/
 
-const GetDefaults = (): ISample => ({
+const getDefaults = (): ISample => ({
   id: 0,
   name: '',
   path: '',
@@ -27,13 +27,15 @@ const schema: Schema<ISample> = {
                                   Types
 ******************************************************************************/
 
-/**
- * @entity sample
- */
-export interface ISample extends Entity {
+export interface ISampleParams {
   name: string;
   path: string;
 }
+
+/**
+ * @entity sample
+ */
+export interface ISample extends Entity, ISampleParams {}
 
 /******************************************************************************
                                   Setup
@@ -45,8 +47,13 @@ const parseSample = parseObject<ISample>(schema);
 // For the APIs make sure the right fields are complete
 const isCompleteSample = testObject<ISample>({
   ...schema,
-  name: isNonEmptyString,
-  path: isNonEmptyString,
+  name: isString,
+  path: isString,
+});
+
+const isCompleteNewSample = testObject<ISampleParams>({
+  name: isString,
+  path: isString,
 });
 
 /******************************************************************************
@@ -57,7 +64,7 @@ const isCompleteSample = testObject<ISample>({
  * New user object.
  */
 function new_(file?: Partial<ISample>): ISample {
-  return parseSample({ ...GetDefaults(), ...file }, (errors) => {
+  return parseSample({ ...getDefaults(), ...file }, (errors) => {
     throw new Error('Setup new user failed ' + JSON.stringify(errors, null, 2));
   });
 }
@@ -69,4 +76,6 @@ function new_(file?: Partial<ISample>): ISample {
 export default {
   new: new_,
   isComplete: isCompleteSample,
+  isCompleteNew: isCompleteNewSample,
+  getDefaults: getDefaults,
 } as const;

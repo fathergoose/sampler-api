@@ -27,7 +27,7 @@ CREATE TABLE public.samples (
     id integer CONSTRAINT sample_files_id_not_null NOT NULL,
     name character varying(64) CONSTRAINT sample_files_name_not_null NOT NULL,
     path character varying(255),
-    created date
+    created timestamp without time zone DEFAULT now()
 );
 
 
@@ -105,4 +105,6 @@ ALTER TABLE ONLY public.schema_migrations
 INSERT INTO public.schema_migrations (version) VALUES
     ('20260326173633'),
     ('20260326222326'),
-    ('20260326223303');
+    ('20260326223303'),
+    ('20260329215258'),
+    ('20260329215514');
