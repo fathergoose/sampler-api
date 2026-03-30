@@ -1,6 +1,3 @@
-import { isNumber } from 'jet-validators';
-import { transform } from 'jet-validators/utils';
-
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import Sample from '@src/models/Sample.model';
 import SampleService from '@src/services/SampleService';
@@ -27,10 +24,10 @@ const reqValidators = {
  *
  * @route GET /api/users/all
  */
-// async function getAll(_: Req, res: Res) {
-//   const users = await UserService.getAll();
-//   res.status(HttpStatusCodes.OK).json({ users });
-// }
+async function getAll(_: Req, res: Res) {
+  const samples = await SampleService.getAll();
+  res.status(HttpStatusCodes.OK).json(samples);
+}
 
 /**
  * Add one user.
@@ -38,10 +35,14 @@ const reqValidators = {
  * @route POST /api/users/add
  */
 async function add(req: Req, res: Res) {
+  console.log(req.file);
   console.log(req.body);
-  const { sample } = reqValidators.add(req.body);
-  const completeSample = { created: new Date(), ...sample };
-  await SampleService.addOne(completeSample);
+  const payload = {
+    sample: { ...JSON.parse(req.body.sample), ...{ path: req.file?.path } },
+  };
+  console.log('payload: ', payload);
+  const { sample } = reqValidators.add(payload);
+  await SampleService.addOne(sample);
   res.status(HttpStatusCodes.CREATED).end();
 }
 
@@ -72,7 +73,7 @@ async function add(req: Req, res: Res) {
 ******************************************************************************/
 
 export default {
-  // getAll,
+  getAll,
   add,
   // update,
   // delete: delete_,

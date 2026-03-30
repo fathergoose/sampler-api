@@ -1,5 +1,5 @@
 import { getRandomInt } from '@src/common/utils/number-utils';
-import Sample, { ISampleParams } from '@src/models/Sample.model';
+import Sample, { ISample, ISampleParams } from '@src/models/Sample.model';
 
 import * as db from './db';
 
@@ -34,15 +34,15 @@ import * as db from './db';
 // }
 
 /**
- * Get all users.
+ * Get all samples.
  */
-// async function getAll(): Promise<IUser[]> {
-//   const db = await orm.openDb();
-//   return db.users;
-// }
+async function getAll(): Promise<ISample[]> {
+  const result = await db.query('SELECT id, name, path, created FROM samples');
+  return result.rows as ISample[];
+}
 
 /**
- * Add one user.
+ * Add one sample.
  */
 async function add(sample: ISampleParams): Promise<number> {
   const result = await db.query(
@@ -123,7 +123,7 @@ async function add(sample: ISampleParams): Promise<number> {
 export default {
   // getOne,
   // persists,
-  // getAll,
+  getAll,
   add,
   // update,
   // delete: delete_,

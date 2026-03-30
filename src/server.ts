@@ -56,6 +56,9 @@ app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
+const uploadsDir = path.join(__dirname, '../uploads');
+app.use('/audio', express.static(uploadsDir));
+
 // Nav to users pg by default
 app.get('/', (_: Request, res: Response) => {
   return res.redirect('/users');

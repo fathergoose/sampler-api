@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import multer from 'multer';
 
 import Paths from '@src/common/constants/Paths';
 
-import SamplesRouter from './SamplesRouter';
+import { storage } from '../repos/FileRepo';
+import SampleRoutes from './SampleRoutes';
 import UserRoutes from './UserRoutes';
 
 /******************************************************************************
@@ -10,13 +12,18 @@ import UserRoutes from './UserRoutes';
 ******************************************************************************/
 
 const apiRouter = Router();
+const upload = multer({ storage });
 
 // ----------------------- Add SampleRouter --------------------------------- //
 
 const sampleRouter = Router();
 
-// sampleRouter.get(Paths.Samples.Get, SamplesRouter.getAll);
-sampleRouter.post(Paths.Samples.Add, SamplesRouter.add);
+sampleRouter.get(Paths.Samples.Get, SampleRoutes.getAll);
+sampleRouter.post(
+  Paths.Samples.Add,
+  upload.single('sampleFile'),
+  SampleRoutes.add,
+);
 // sampleRouter.put(Paths.Samples.Update, UserRoutes.update);
 // sampleRouter.delete(Paths.Samples.Delete, UserRoutes.delete);
 

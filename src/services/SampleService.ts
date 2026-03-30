@@ -1,6 +1,6 @@
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { RouteError } from '@src/common/utils/route-errors';
-import { ISampleParams } from '@src/models/Sample.model';
+import { ISample, ISampleParams } from '@src/models/Sample.model';
 import SampleRepo from '@src/repos/SampleRepo';
 
 /******************************************************************************
@@ -18,9 +18,9 @@ const Errors = {
 /**
  * Get all users.
  */
-// function getAll(): Promise<ISample[]> {
-//   return UserRepo.getAll();
-// }
+function getAll(): Promise<ISample[]> {
+  return SampleRepo.getAll();
+}
 
 /**
  * Add one user.
@@ -57,7 +57,7 @@ function addOne(sample: ISampleParams): Promise<number> {
 
 export default {
   Errors,
-  // getAll,
+  getAll,
   addOne,
   // updateOne,
   // delete: deleteOne,
