@@ -1,0 +1,14 @@
+services:
+  sampler-api:
+    image: postgres:latest
+    # container_name: sampler-api
+    environment:
+      POSTGRES_PASSWORD: badpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: no
+
+volumes:
+  postgres_data:
