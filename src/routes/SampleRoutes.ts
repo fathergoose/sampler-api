@@ -20,7 +20,7 @@ const reqValidators = {
 ******************************************************************************/
 
 /**
- * Get all users.
+ * Get all sample.
  *
  * @route GET /api/users/all
  */
@@ -30,9 +30,19 @@ async function getAll(_: Req, res: Res) {
 }
 
 /**
+ * Get one sample.
+ *
+ * @route GET /api/samples/:id
+ */
+async function getOne(req: Req, res: Res) {
+  const sample = await SampleService.getOne(req.params.id);
+  res.status(HttpStatusCodes.OK).json(sample);
+}
+
+/**
  * Add one user.
  *
- * @route POST /api/users/add
+ * @route POST /api/samples/add
  */
 async function add(req: Req, res: Res) {
   console.log(req.file);
@@ -74,6 +84,7 @@ async function add(req: Req, res: Res) {
 
 export default {
   getAll,
+  getOne,
   add,
   // update,
   // delete: delete_,

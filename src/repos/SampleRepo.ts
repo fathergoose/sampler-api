@@ -10,15 +10,15 @@ import * as db from './db';
 /**
  * Get one user.
  */
-// async function getOne(id: number): Promise<ISample | null> {
-//   try {
-//     const result = await db.query('SELECT * FROM samples WHERE id = $1', [id]);
-//     const sample = Sample.new(result.rows[0]);
-//     return sample;
-//   } catch (error) {
-//     return null;
-//   }
-// }
+async function getOne(id: number): Promise<ISample | null> {
+  try {
+    const result = await db.query('SELECT * FROM samples WHERE id = $1', [id]);
+    const sample = Sample.new(result.rows[0]);
+    return sample;
+  } catch (error) {
+    return null;
+  }
+}
 
 /**
  * See if a user with the given id exists.
@@ -37,7 +37,7 @@ import * as db from './db';
  * Get all samples.
  */
 async function getAll(): Promise<ISample[]> {
-  const result = await db.query('SELECT id, name, path, created FROM samples');
+  const result = await db.query('SELECT id, name, path, source, created FROM samples');
   return result.rows as ISample[];
 }
 
@@ -46,8 +46,8 @@ async function getAll(): Promise<ISample[]> {
  */
 async function add(sample: ISampleParams): Promise<number> {
   const result = await db.query(
-    'INSERT INTO samples (name, path) VALUES ($1, $2) RETURNING id',
-    [sample.name, sample.path],
+    'INSERT INTO samples (name, path, source) VALUES ($1, $2, $3) RETURNING id',
+    [sample.name, sample.path, 'default'],
   );
   return result.rows[0] as number;
 }
@@ -121,7 +121,7 @@ async function add(sample: ISampleParams): Promise<number> {
 ******************************************************************************/
 
 export default {
-  // getOne,
+  getOne,
   // persists,
   getAll,
   add,

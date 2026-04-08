@@ -13,6 +13,7 @@ const getDefaults = (): ISample => ({
   id: 0,
   name: '',
   path: '',
+  source: 'default',
   created: new Date(),
 });
 
@@ -20,6 +21,7 @@ const schema: Schema<ISample> = {
   id: isUnsignedInteger,
   name: isString,
   path: isString,
+  source: isString,
   created: transformIsDate,
 };
 
@@ -35,7 +37,9 @@ export interface ISampleParams {
 /**
  * @entity sample
  */
-export interface ISample extends Entity, ISampleParams {}
+export interface ISample extends Entity, ISampleParams {
+  source: string
+}
 
 /******************************************************************************
                                   Setup

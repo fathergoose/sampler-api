@@ -23,6 +23,14 @@ function getAll(): Promise<ISample[]> {
 }
 
 /**
+ * Get one user.
+ */
+function getOne(id): Promise<ISample[]> {
+  return SampleRepo.getOne(id);
+}
+
+
+/**
  * Add one user.
  */
 function addOne(sample: ISampleParams): Promise<number> {
@@ -59,6 +67,7 @@ export default {
   Errors,
   getAll,
   addOne,
+  getOne,
   // updateOne,
   // delete: deleteOne,
 } as const;

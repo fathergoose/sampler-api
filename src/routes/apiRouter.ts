@@ -19,6 +19,7 @@ const upload = multer({ storage });
 const sampleRouter = Router();
 
 sampleRouter.get(Paths.Samples.Get, SampleRoutes.getAll);
+sampleRouter.get(Paths.Samples.GetOne, SampleRoutes.getOne);
 sampleRouter.post(
   Paths.Samples.Add,
   upload.single('sampleFile'),

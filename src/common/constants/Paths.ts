@@ -5,6 +5,7 @@ const Paths = {
   Samples: {
     _: '/samples',
     Get: '/all',
+    GetOne: '/:id',
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',
