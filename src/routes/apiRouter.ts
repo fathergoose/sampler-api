@@ -6,6 +6,7 @@ import Paths from '@src/common/constants/Paths';
 import { storage } from '../repos/FileRepo';
 import SampleRoutes from './SampleRoutes';
 import UserRoutes from './UserRoutes';
+import cors from 'cors'
 
 /******************************************************************************
                                 Setup
@@ -13,7 +14,7 @@ import UserRoutes from './UserRoutes';
 
 const apiRouter = Router();
 const upload = multer({ storage });
-
+apiRouter.use(cors())
 // ----------------------- Add SampleRouter --------------------------------- //
 
 const sampleRouter = Router();
