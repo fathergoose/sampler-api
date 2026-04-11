@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import logger from 'jet-logger';
 import morgan from 'morgan';
 import path from 'path';
+import cors from 'cors'
 
 import Paths from '@src/common/constants/Paths';
 import { RouteError } from '@src/common/utils/route-errors';
@@ -32,6 +33,9 @@ if (EnvVars.NodeEnv === NodeEnvs.PRODUCTION) {
   app.use(helmet());
 }
 
+// Cors
+app.use(cors())
+
 // Add APIs, must be after middleware
 app.use(Paths._, BaseRouter);
 
@@ -57,7 +61,7 @@ const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
 const uploadsDir = path.join(__dirname, '../uploads');
-app.use('/audio', express.static(uploadsDir));
+app.use('/uploads', express.static(uploadsDir));
 
 // Nav to users pg by default
 app.get('/', (_: Request, res: Response) => {
