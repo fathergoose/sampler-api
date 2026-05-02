@@ -1,7 +1,10 @@
-import { Pool } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from 'pg';
 
 const pool = new Pool();
 
-export const query = (text: string, params?) => {
-  return pool.query(text, params);
-};
+export function query<T extends QueryResultRow = Record<string, unknown>>(
+  sql: string,
+  params?: unknown[],
+): Promise<QueryResult<T>> {
+  return pool.query<T>(sql, params);
+}

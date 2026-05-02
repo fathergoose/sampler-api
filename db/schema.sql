@@ -20,6 +20,40 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: clips; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.clips (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    start_at numeric(10,6) NOT NULL,
+    end_at numeric(10,6) NOT NULL,
+    gain numeric(6,4) DEFAULT 1.0 NOT NULL,
+    sample_id integer
+);
+
+
+--
+-- Name: clips_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.clips_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: clips_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.clips_id_seq OWNED BY public.clips.id;
+
+
+--
 -- Name: samples; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -62,10 +96,25 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: clips id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.clips ALTER COLUMN id SET DEFAULT nextval('public.clips_id_seq'::regclass);
+
+
+--
 -- Name: samples id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.samples ALTER COLUMN id SET DEFAULT nextval('public.samples_id_seq'::regclass);
+
+
+--
+-- Name: clips clips_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.clips
+    ADD CONSTRAINT clips_pkey PRIMARY KEY (id);
 
 
 --
@@ -93,6 +142,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: clips clips_sample_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.clips
+    ADD CONSTRAINT clips_sample_id_fkey FOREIGN KEY (sample_id) REFERENCES public.samples(id) ON DELETE SET NULL;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -104,4 +161,5 @@ ALTER TABLE ONLY public.schema_migrations
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20260406200124');
+    ('20260406200124'),
+    ('20260429092331');

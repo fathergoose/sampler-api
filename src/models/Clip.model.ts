@@ -1,4 +1,10 @@
-import { isNonEmptyString, isString, isUnsignedInteger } from 'jet-validators';
+import {
+  isNonEmptyString,
+  isNullableUnsignedInteger,
+  isNumber,
+  isString,
+  isUnsignedInteger,
+} from 'jet-validators';
 import { parseObject, Schema, testObject } from 'jet-validators/utils';
 
 import { transformIsDate } from '@src/common/utils/validators';
@@ -9,17 +15,23 @@ import { Entity } from './common/types';
                                  Constants
 ******************************************************************************/
 
-const GetDefaults = (): IUser => ({
+const getDefaults = (): IClip => ({
   id: 0,
-  name: '',
-  email: '',
+  name: ' ',
+  startAt: 0,
+  endAt: 0,
+  gain: 1,
+  sampleId: null,
   created: new Date(),
 });
 
-const schema: Schema<IUser> = {
+const schema: Schema<IClip> = {
   id: isUnsignedInteger,
-  name: isString,
-  email: isString,
+  name: isNonEmptyString,
+  startAt: isNumber,
+  endAt: isNumber,
+  gain: isNumber,
+  sampleId: isNullableUnsignedInteger,
   created: transformIsDate,
 };
 
@@ -27,26 +39,42 @@ const schema: Schema<IUser> = {
                                   Types
 ******************************************************************************/
 
-/**
- * @entity users
- */
-export interface IUser extends Entity {
+export interface IClipParams {
   name: string;
-  email: string;
+  startAt: number;
+  endAt: number;
+  gain: number;
+  sampleId: number | null;
 }
+
+/**
+ * @entity clip
+ */
+export interface IClip extends Entity, IClipParams {}
 
 /******************************************************************************
                                   Setup
 ******************************************************************************/
 
-// Set the "parseUser" function
-const parseUser = parseObject<IUser>(schema);
+// Set the "parseClip" function
+const parseClip = parseObject<IClip>(schema);
 
 // For the APIs make sure the right fields are complete
-const isCompleteUser = testObject<IUser>({
+const isCompleteClip = testObject<IClip>({
   ...schema,
-  name: isNonEmptyString,
-  email: isNonEmptyString,
+  name: isString,
+  startAt: isNumber,
+  endAt: isNumber,
+  gain: isNumber,
+  sampleId: isUnsignedInteger,
+});
+
+const isCompleteNewClip = testObject<IClipParams>({
+  name: isString,
+  startAt: isNumber,
+  endAt: isNumber,
+  gain: isNumber,
+  sampleId: isUnsignedInteger,
 });
 
 /******************************************************************************
@@ -56,8 +84,8 @@ const isCompleteUser = testObject<IUser>({
 /**
  * New user object.
  */
-function new_(user?: Partial<IUser>): IUser {
-  return parseUser({ ...GetDefaults(), ...user }, (errors) => {
+function new_(file?: Partial<IClip>): IClip {
+  return parseClip({ ...getDefaults(), ...file }, (errors) => {
     throw new Error('Setup new user failed ' + JSON.stringify(errors, null, 2));
   });
 }
@@ -68,5 +96,7 @@ function new_(user?: Partial<IUser>): IUser {
 
 export default {
   new: new_,
-  isComplete: isCompleteUser,
+  isComplete: isCompleteClip,
+  isCompleteNew: isCompleteNewClip,
+  getDefaults: getDefaults,
 } as const;

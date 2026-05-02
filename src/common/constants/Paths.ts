@@ -10,9 +10,10 @@ const Paths = {
     Update: '/update',
     Delete: '/delete/:id',
   },
-  Users: {
-    _: '/users',
+  Clips: {
+    _: '/samples',
     Get: '/all',
+    GetOne: '/:id',
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',

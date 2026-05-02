@@ -25,10 +25,9 @@ function getAll(): Promise<ISample[]> {
 /**
  * Get one user.
  */
-function getOne(id): Promise<ISample[]> {
+function getOne(id: number): Promise<ISample[] | null> {
   return SampleRepo.getOne(id);
 }
-
 
 /**
  * Add one user.

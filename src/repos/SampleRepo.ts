@@ -8,11 +8,14 @@ import * as db from './db';
 ******************************************************************************/
 
 /**
- * Get one user.
+ * Get one sample.
  */
 async function getOne(id: number): Promise<ISample | null> {
   try {
-    const result = await db.query('SELECT * FROM samples WHERE id = $1', [id]);
+    const result = await db.query<ISample>(
+      'SELECT * FROM samples WHERE id = $1',
+      [id],
+    );
     const sample = Sample.new(result.rows[0]);
     return sample;
   } catch (error) {
@@ -21,23 +24,20 @@ async function getOne(id: number): Promise<ISample | null> {
 }
 
 /**
- * See if a user with the given id exists.
+ * See if a sample with the given id exists.
  */
-// async function persists(id: number): Promise<boolean> {
-//   const db = await orm.openDb();
-//   for (const user of db.users) {
-//     if (user.id === id) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
+async function persists(id: number): Promise<boolean> {
+  const result = await db.query('SELECT 1 FROM samples WHERE id = $1', [id]);
+  return result.rows.length > 0;
+}
 
 /**
  * Get all samples.
  */
 async function getAll(): Promise<ISample[]> {
-  const result = await db.query('SELECT id, name, path, source, created FROM samples');
+  const result = await db.query(
+    'SELECT id, name, path, source, created FROM samples',
+  );
   return result.rows as ISample[];
 }
 
@@ -53,68 +53,51 @@ async function add(sample: ISampleParams): Promise<number> {
 }
 
 /**
- * Update a user.
+ * Update a sample.
  */
-// async function update(user: IUser): Promise<void> {
-//   const db = await orm.openDb();
-//   for (let i = 0; i < db.users.length; i++) {
-//     if (db.users[i].id === user.id) {
-//       const dbUser = db.users[i];
-//       db.users[i] = {
-//         ...dbUser,
-//         name: user.name,
-//         email: user.email,
-//       };
-//       return orm.saveDb(db);
-//     }
-//   }
-// }
+async function update(sample: ISample): Promise<void> {
+  await db.query(
+    'UPDATE samples SET name = $1, path = $2, source = $3 WHERE id = $4',
+    [sample.name, sample.path, sample.source, sample.id],
+  );
+}
 
 /**
- * Delete one user.
+ * Delete one sample.
  */
-// async function delete_(id: number): Promise<void> {
-//   const db = await orm.openDb();
-//   for (let i = 0; i < db.users.length; i++) {
-//     if (db.users[i].id === id) {
-//       db.users.splice(i, 1);
-//       return orm.saveDb(db);
-//     }
-//   }
-// }
+async function delete_(id: number): Promise<void> {
+  await db.query('DELETE FROM samples WHERE id = $1', [id]);
+}
 
 // **** Unit-Tests Only **** //
 
 /**
  * @testOnly
  *
- * Delete every user record.
+ * Delete every sample record.
  */
-// async function deleteAllUsers(): Promise<void> {
-//   const db = await orm.openDb();
-//   db.users = [];
-//   return orm.saveDb(db);
-// }
+async function deleteAll(): Promise<void> {
+  await db.query('DELETE FROM samples');
+}
 
 /**
  * @testOnly
  *
- * Insert multiple users. Can't do multiple at once cause using a plain file
- * for now.
+ * Insert multiple samples.
  */
-// async function insertMultiple(
-//   users: IUser[] | readonly IUser[],
-// ): Promise<IUser[]> {
-//   const db = await orm.openDb(),
-//     usersF = [...users];
-//   for (const user of usersF) {
-//     user.id = getRandomInt();
-//     user.created = new Date();
-//   }
-//   db.users = [...db.users, ...users];
-//   await orm.saveDb(db);
-//   return usersF;
-// }
+async function insertMultiple(
+  samples: ISample[] | readonly ISample[],
+): Promise<ISample[]> {
+  const samplesF = [...samples];
+  for (const sample of samplesF) {
+    const result = await db.query(
+      'INSERT INTO samples (name, path, source) VALUES ($1, $2, $3) RETURNING *',
+      [sample.name, sample.path, sample.source],
+    );
+    Object.assign(sample, result.rows[0]);
+  }
+  return samplesF;
+}
 
 /******************************************************************************
                                 Export default
@@ -122,11 +105,11 @@ async function add(sample: ISampleParams): Promise<number> {
 
 export default {
   getOne,
-  // persists,
+  persists,
   getAll,
   add,
-  // update,
-  // delete: delete_,
-  // deleteAllUsers,
-  // insertMultiple,
+  update,
+  delete: delete_,
+  deleteAll,
+  insertMultiple,
 } as const;
