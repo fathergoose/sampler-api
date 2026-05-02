@@ -11,7 +11,7 @@ const Paths = {
     Delete: '/delete/:id',
   },
   Clips: {
-    _: '/samples',
+    _: '/clips',
     Get: '/all',
     GetOne: '/:id',
     Add: '/add',
