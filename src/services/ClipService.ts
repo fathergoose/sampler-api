@@ -25,7 +25,7 @@ function getAll(): Promise<IClip[]> {
 /**
  * Get one user.
  */
-function getOne(id): Promise<IClip[]> {
+function getOne(id: number): Promise<IClip | null> {
   return ClipRepo.getOne(id);
 }
 

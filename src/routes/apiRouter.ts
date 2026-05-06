@@ -24,5 +24,9 @@ apiRouter.use(Paths.Samples._, sampleRouter);
 
 const clipRouter = Router();
 clipRouter.get(Paths.Clips.Get, ClipRoutes.getAll);
+clipRouter.get(Paths.Clips.GetOne, ClipRoutes.getOne);
+clipRouter.post(Paths.Clips.Add, ClipRoutes.add);
+
+apiRouter.use(Paths.Clips._, clipRouter);
 
 export default apiRouter;

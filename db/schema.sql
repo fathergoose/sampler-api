@@ -29,7 +29,8 @@ CREATE TABLE public.clips (
     start_at numeric(10,6) NOT NULL,
     end_at numeric(10,6) NOT NULL,
     gain numeric(6,4) DEFAULT 1.0 NOT NULL,
-    sample_id integer
+    sample_id integer,
+    created timestamp without time zone DEFAULT now()
 );
 
 
@@ -162,4 +163,5 @@ ALTER TABLE ONLY public.clips
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20260406200124'),
-    ('20260429092331');
+    ('20260429092331'),
+    ('20260505153235');

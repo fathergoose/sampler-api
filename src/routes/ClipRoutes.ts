@@ -35,7 +35,8 @@ async function getAll(_: Req, res: Res) {
  * @route GET /api/clips/:id
  */
 async function getOne(req: Req, res: Res) {
-  const clip = await ClipService.getOne(req.params.id);
+  const id = parseInt(req.params.id);
+  const clip = await ClipService.getOne(id);
   res.status(HttpStatusCodes.OK).json(clip);
 }
 
@@ -45,12 +46,11 @@ async function getOne(req: Req, res: Res) {
  * @route POST /api/clips/add
  */
 async function add(req: Req, res: Res) {
-  console.log(req.file);
+  console.log('request add');
   console.log(req.body);
   const payload = {
-    clip: { ...JSON.parse(req.body.clip), ...{ path: req.file?.path } },
+    clip: req.body as unknown,
   };
-  console.log('payload: ', payload);
   const { clip } = reqValidators.add(payload);
   await ClipService.addOne(clip);
   res.status(HttpStatusCodes.CREATED).end();
