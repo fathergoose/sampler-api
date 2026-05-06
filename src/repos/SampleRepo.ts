@@ -1,7 +1,8 @@
-import { getRandomInt } from '@src/common/utils/number-utils';
+/* eslint-disable no-console */
 import Sample, { ISample, ISampleParams } from '@src/models/Sample.model';
 
 import * as db from './db';
+import { sql } from '@src/common/sql';
 
 /******************************************************************************
                                 Functions
@@ -12,13 +13,18 @@ import * as db from './db';
  */
 async function getOne(id: number): Promise<ISample | null> {
   try {
-    const result = await db.query<ISample>(
-      'SELECT * FROM samples WHERE id = $1',
-      [id],
-    );
+    const result = await db.query<ISample>(sql`
+      SELECT
+        *
+      FROM
+        samples
+      WHERE
+        id = ${id}
+    `);
     const sample = Sample.new(result.rows[0]);
     return sample;
   } catch (error) {
+    console.error('Error: ', error);
     return null;
   }
 }
@@ -27,7 +33,14 @@ async function getOne(id: number): Promise<ISample | null> {
  * See if a sample with the given id exists.
  */
 async function persists(id: number): Promise<boolean> {
-  const result = await db.query('SELECT 1 FROM samples WHERE id = $1', [id]);
+  const result = await db.query(sql`
+    SELECT
+      1
+    FROM
+      samples
+    WHERE
+      id = ${id}
+  `);
   return result.rows.length > 0;
 }
 
@@ -35,38 +48,59 @@ async function persists(id: number): Promise<boolean> {
  * Get all samples.
  */
 async function getAll(): Promise<ISample[]> {
-  const result = await db.query(
-    'SELECT id, name, path, source, created FROM samples',
-  );
-  return result.rows as ISample[];
+  const result = await db.query<ISample>(sql`
+    SELECT
+      id,
+      name,
+      path,
+      source,
+      created
+    FROM
+      samples
+  `);
+  return result.rows;
 }
 
 /**
  * Add one sample.
  */
-async function add(sample: ISampleParams): Promise<number> {
-  const result = await db.query(
-    'INSERT INTO samples (name, path, source) VALUES ($1, $2, $3) RETURNING id',
-    [sample.name, sample.path, 'default'],
-  );
-  return result.rows[0] as number;
+async function add(sample: ISampleParams): Promise<void> {
+  await db.query(sql`
+    INSERT INTO
+      samples (name, path, source)
+    VALUES
+      (
+        ${sample.name},
+        ${sample.path},
+        ${'default'}
+      )
+  `);
 }
 
 /**
  * Update a sample.
  */
 async function update(sample: ISample): Promise<void> {
-  await db.query(
-    'UPDATE samples SET name = $1, path = $2, source = $3 WHERE id = $4',
-    [sample.name, sample.path, sample.source, sample.id],
-  );
+  await db.query(sql`
+    UPDATE samples
+    SET
+      name = ${sample.name},
+      path = ${sample.path},
+      source = ${sample.source}
+    WHERE
+      id = ${sample.id}
+  `);
 }
 
 /**
  * Delete one sample.
  */
 async function delete_(id: number): Promise<void> {
-  await db.query('DELETE FROM samples WHERE id = $1', [id]);
+  await db.query(sql`
+    DELETE FROM samples
+    WHERE
+      id = ${id}
+  `);
 }
 
 // **** Unit-Tests Only **** //
@@ -77,7 +111,7 @@ async function delete_(id: number): Promise<void> {
  * Delete every sample record.
  */
 async function deleteAll(): Promise<void> {
-  await db.query('DELETE FROM samples');
+  await db.query(sql`DELETE FROM samples`);
 }
 
 /**
@@ -90,10 +124,18 @@ async function insertMultiple(
 ): Promise<ISample[]> {
   const samplesF = [...samples];
   for (const sample of samplesF) {
-    const result = await db.query(
-      'INSERT INTO samples (name, path, source) VALUES ($1, $2, $3) RETURNING *',
-      [sample.name, sample.path, sample.source],
-    );
+    const result = await db.query(sql`
+      INSERT INTO
+        samples (name, path, source)
+      VALUES
+        (
+          ${sample.name},
+          ${sample.path},
+          ${sample.source}
+        )
+      RETURNING
+        *
+    `);
     Object.assign(sample, result.rows[0]);
   }
   return samplesF;

@@ -91,8 +91,38 @@ async function add(clip: IClipParams): Promise<number> {
   return (result.rows[0]?.id ?? 0) as number;
 }
 
+const UPDATABLE_COLUMNS: Record<keyof IClipParams, string> = {
+  name: 'name',
+  startAt: 'start_at',
+  endAt: 'end_at',
+  gain: 'gain',
+  sampleId: 'sample_id',
+};
+
+async function update(id: number, clip: Partial<IClipParams>): Promise<void> {
+  const sets: string[] = [];
+  const values: unknown[] = [];
+
+  for (const [key, column] of Object.entries(UPDATABLE_COLUMNS)) {
+    const value = clip[key as keyof IClipParams];
+    if (value === undefined) continue;
+    values.push(value);
+    sets.push(`${column} = $${values.length}`);
+  }
+
+  if (sets.length === 0) return;
+
+  values.push(id);
+
+  await db.query({
+    text: `UPDATE clips SET ${sets.join(', ')} WHERE id = $${values.length}`,
+    values: values,
+  });
+}
+
 export default {
   getOne,
   getAll,
   add,
+  update,
 } as const;
