@@ -15,7 +15,7 @@ const Paths = {
     Get: '/all',
     GetOne: '/:id',
     Add: '/add',
-    Update: '/update',
+    Update: '/:id',
     Delete: '/delete/:id',
   },
 } as const;

@@ -102,6 +102,9 @@ const UPDATABLE_COLUMNS: Record<keyof IClipParams, string> = {
 async function update(id: number, clip: Partial<IClipParams>): Promise<void> {
   const sets: string[] = [];
   const values: unknown[] = [];
+  console.log(
+    `clipRepo.update(id, clip)\n\tid: ${id}\n\tclip: ${JSON.stringify(clip)}`,
+  );
 
   for (const [key, column] of Object.entries(UPDATABLE_COLUMNS)) {
     const value = clip[key as keyof IClipParams];

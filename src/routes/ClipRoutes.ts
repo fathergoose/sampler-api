@@ -11,6 +11,7 @@ import parseReq from './common/parseReq';
 
 const reqValidators = {
   add: parseReq({ clip: Clip.isCompleteNew }),
+  update: parseReq({ clip: Clip.isUpdateable }),
   // update: parseReq({ user: Clip.isComplete }),
   // delete: parseReq({ id: transform(Number, isNumber) }),
 } as const;
@@ -56,6 +57,18 @@ async function add(req: Req, res: Res) {
   res.status(HttpStatusCodes.CREATED).end();
 }
 
+async function update(req: Req, res: Res) {
+  const payload = {
+    clip: req.body as unknown,
+  };
+  console.log('payload: ' + JSON.stringify(payload));
+  const id = req.params.id;
+  const { clip } = reqValidators.update(payload);
+  console.log('router clip: ' + JSON.stringify(clip));
+  await ClipService.updateOne(parseInt(id), clip);
+  res.status(HttpStatusCodes.OK).end();
+}
+
 /**
  * Update one user.
  *
@@ -86,6 +99,6 @@ export default {
   getAll,
   getOne,
   add,
-  // update,
+  update,
   // delete: delete_,
 } as const;

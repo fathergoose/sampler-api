@@ -36,6 +36,10 @@ function addOne(clip: IClipParams): Promise<number> {
   return ClipRepo.add(clip);
 }
 
+function updateOne(id: number, clip: Partial<IClipParams>): Promise<void> {
+  return ClipRepo.update(id, clip);
+}
+
 /**
  * Update one user.
  */
@@ -67,6 +71,6 @@ export default {
   getAll,
   addOne,
   getOne,
-  // updateOne,
+  updateOne,
   // delete: deleteOne,
 } as const;

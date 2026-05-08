@@ -26,6 +26,7 @@ const clipRouter = Router();
 clipRouter.get(Paths.Clips.Get, ClipRoutes.getAll);
 clipRouter.get(Paths.Clips.GetOne, ClipRoutes.getOne);
 clipRouter.post(Paths.Clips.Add, ClipRoutes.add);
+clipRouter.patch(Paths.Clips.Update, ClipRoutes.update);
 
 apiRouter.use(Paths.Clips._, clipRouter);
 

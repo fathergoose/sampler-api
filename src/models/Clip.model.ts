@@ -5,7 +5,12 @@ import {
   isString,
   isUnsignedInteger,
 } from 'jet-validators';
-import { parseObject, Schema, testObject } from 'jet-validators/utils';
+import {
+  makeOptional,
+  parseObject,
+  Schema,
+  testObject,
+} from 'jet-validators/utils';
 
 import { transformIsDate } from '@src/common/utils/validators';
 
@@ -82,6 +87,14 @@ const isCompleteNewClip = testObject<IClipParams>({
   sampleId: isUnsignedInteger,
 });
 
+const isUpdateable = testObject<Partial<IClipParams>>({
+  name: makeOptional(isString),
+  startAt: makeOptional(isNumber),
+  endAt: makeOptional(isNumber),
+  gain: makeOptional(isNumber),
+  sampleId: makeOptional(isUnsignedInteger),
+});
+
 /******************************************************************************
                                  Functions
 ******************************************************************************/
@@ -141,5 +154,6 @@ export default {
   fromRow: newFromRow,
   isComplete: isCompleteClip,
   isCompleteNew: isCompleteNewClip,
+  isUpdateable: isUpdateable,
   getDefaults: getDefaults,
 } as const;
